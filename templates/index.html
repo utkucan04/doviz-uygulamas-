@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Döviz Takip</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h1>Döviz Takip Sistemi</h1>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Döviz Kurları</h2>
+        <div id="doviz" class="rates"></div>
+    </div>
+
+    <div class="card">
+        <h2>TL Çevirici</h2>
+        <input id="tl" type="number" placeholder="Miktar gir">
+        <button onclick="cevir()">Çevir</button>
+        <div id="sonuc"></div>
+    </div>
+
+</div>
+
+<script>
+fetch("https://api.exchangerate-api.com/v4/latest/TRY")
+  .then(r => r.json())
+  .then(data => {
+    window.usd = data.rates.USD;
+    window.eur = data.rates.EUR;
+    window.gbp = data.rates.GBP;
+
+    document.getElementById("doviz").innerHTML = `
+      1 USD = ${(1 / window.usd).toFixed(2)} TL<br>
+      1 EUR = ${(1 / window.eur).toFixed(2)} TL<br>
+      1 GBP = ${(1 / window.gbp).toFixed(2)} TL<br>
+    `;
+  });
+
+function cevir() {
+  let tl = parseFloat(document.getElementById("tl").value);
+
+  document.getElementById("sonuc").innerHTML = `
+    USD: ${(tl / (1 / window.usd)).toFixed(2)}<br>
+    EUR: ${(tl / (1 / window.eur)).toFixed(2)}<br>
+    GBP: ${(tl / (1 / window.gbp)).toFixed(2)}<br>
+  `;
+}
+</script>
+
+</body>
+</html>
